@@ -6,36 +6,36 @@ on:
 
 jobs:
 
-  # :hammer: BUILD + PUSH JOB..
+  # 🔨 BUILD + PUSH JOB..
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: :inbox_tray: Checkout Code
+      - name: 📥 Checkout Code
         uses: actions/checkout@v3
 
-      - name: :closed_lock_with_key: Login to Docker Hub
+      - name: 🔐 Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: :hammer: Build Docker Image
+      - name: 🔨 Build Docker Image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/devops-demo:latest .
 
-      - name: :outbox_tray: Push Docker Image
+      - name: 📤 Push Docker Image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/devops-demo:latest
 
 
-  # :test_tube: TEST JOB
+  # 🧪 TEST JOB
   test:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: :inbox_tray: Pull Image
+      - name: 📥 Pull Image
         run: docker pull ${{ secrets.DOCKER_USERNAME }}/devops-demo:latest
 
-      - name: :test_tube: Test Container
+      - name: 🧪 Test Container
         run: |
           docker run -d -p 8080:80 --name test-container ${{ secrets.DOCKER_USERNAME }}/devops-demo:latest
 
@@ -46,13 +46,13 @@ jobs:
           docker rm -f test-container
 
 
-  # :rocket: DEPLOY JOB
+  # 🚀 DEPLOY JOB
   deploy:
     runs-on: ubuntu-latest
     needs: test
 
     steps:
-      - name: :rocket: Deploy to EC2
+      - name: 🚀 Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
